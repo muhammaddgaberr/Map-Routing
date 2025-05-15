@@ -1,0 +1,3 @@
+﻿  MAP ROUTING.cpp
+C:\Users\DELL\source\repos\MAP ROUTING\MAP ROUTING\MAP ROUTING.cpp(54,66): warning C4267: 'argument': conversion from 'size_t' to 'int', possible loss of data
+  MAP ROUTING.vcxproj -> C:\Users\DELL\source\repos\MAP ROUTING\MAP ROUTING\x64\Debug\MAP ROUTING.exe

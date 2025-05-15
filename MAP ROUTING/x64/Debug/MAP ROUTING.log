@@ -1,0 +1,27 @@
+﻿  Speed_Bonus.cpp
+C:\Users\DELL\OneDrive\Desktop\MAP ROUTING2\MAP ROUTING\MAP ROUTING\Speed_Bonus.cpp(12,11): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\DELL\OneDrive\Desktop\MAP ROUTING2\MAP ROUTING\MAP ROUTING\Speed_Bonus.cpp(14,12): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\DELL\OneDrive\Desktop\MAP ROUTING2\MAP ROUTING\MAP ROUTING\Speed_Bonus.cpp(47,11): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244: 'initializing': conversion from '_Ty' to '_Ty1', possible loss of data
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244:         with
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244:             _Ty=int
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244:         ]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244:         and
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244:         [
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244:             _Ty1=float
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16): warning C4244:         ]
+  (compiling source file 'Speed_Bonus.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.43.34808\include\utility(274,16):
+      the template instantiation context (the oldest one first) is
+          C:\Users\DELL\OneDrive\Desktop\MAP ROUTING2\MAP ROUTING\MAP ROUTING\Speed_Bonus.cpp(58,13):
+          see reference to function template instantiation 'std::pair<float,int>::pair<int,int&,0>(_Other1 &&,_Other2) noexcept' being compiled
+          with
+          [
+              _Other1=int,
+              _Other2=int &
+          ]
+              C:\Users\DELL\OneDrive\Desktop\MAP ROUTING2\MAP ROUTING\MAP ROUTING\Speed_Bonus.cpp(58,12):
+              see the first reference to 'std::pair<float,int>::pair' in 'Speed_Bonus::dijkstra_bonus'
+  
+  MAP ROUTING.vcxproj -> C:\Users\DELL\OneDrive\Desktop\MAP ROUTING2\MAP ROUTING\x64\Debug\MAP ROUTING.exe

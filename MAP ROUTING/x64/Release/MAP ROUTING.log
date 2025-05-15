@@ -1,0 +1,8 @@
+﻿  Read_file.cpp
+C:\Users\DELL\OneDrive\Desktop\MAP ROUTING2\MAP ROUTING\MAP ROUTING\Read_file.cpp(82,25): warning C4101: 'speed': unreferenced local variable
+  Generating code
+  0 of 768 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  MAP ROUTING.vcxproj -> C:\Users\DELL\OneDrive\Desktop\MAP ROUTING2\MAP ROUTING\x64\Release\MAP ROUTING.exe
