@@ -1,177 +1,167 @@
 #include "Speed_Bonus.h"
 #include <functional>
 #include<set>
+#include <map>
 
 
 
 void Speed_Bonus::fixing_Adj_List_bonus(
     vector<vector<Read_file::Adj_nodes_bonus>>& adj_list,
-    vector<pair<float, float>>& co_ordinates,
-    float source_x, float source_y,
-    float destination_x, float destination_y, float R)
+    vector<pair<double, double>>& co_ordinates,
+    double source_x, double source_y,
+    double destination_x, double destination_y, double R, int co_ordinates_size)
 {
     R = R / 1000.0;
     R *= R;
-    int sz = co_ordinates.size();
-    for (int i = 0; i < sz; ++i)
+    for (int i = 0; i < co_ordinates_size; ++i)
     {
-        float dx_source = co_ordinates[i].first - source_x;
-        float dy_source = co_ordinates[i].second - source_y;
-        float dis_pow_2_source = dx_source * dx_source + dy_source * dy_source;
+        double dx_source = co_ordinates[i].first - source_x;
+        double dy_source = co_ordinates[i].second - source_y;
+        double dis_pow_2_source = dx_source * dx_source + dy_source * dy_source;
         if (dis_pow_2_source <= R)
         {
-            float dis = sqrt(dis_pow_2_source);
+            double dis = sqrt(dis_pow_2_source);
             adj_list[0].push_back({ i + 1,dis, {dis / 5.0f} });
         }
-        float dx_dest = co_ordinates[i].first - destination_x;
-        float dy_dest = co_ordinates[i].second - destination_y;
-        float dis_pow_2_dest = dx_dest * dx_dest + dy_dest * dy_dest;
+        double dx_dest = co_ordinates[i].first - destination_x;
+        double dy_dest = co_ordinates[i].second - destination_y;
+        double dis_pow_2_dest = dx_dest * dx_dest + dy_dest * dy_dest;
 
         if (dis_pow_2_dest <= R)
         {
-            float dis = sqrt(dis_pow_2_dest);
+            double dis = sqrt(dis_pow_2_dest);
             adj_list[i + 1].push_back({ (int)(adj_list.size() - 1), dis, {dis / 5.0f} });
+			adj_list[(int)(adj_list.size() - 1)].push_back({ i + 1, dis, {dis / 5.0f} });
             added_to_destination.push_back(i + 1);
         }
 
     }
+    /*for (int i = 0; i < adj_list.size(); ++i)
+    {
+        cout << "Node : " << i;
+        for (int j = 0; j < adj_list[i].size(); ++j)
+        {
+            cout << " { adj node is " << adj_list[i][j].node << " , the distance is " <<
+                adj_list[i][j].distance << " ,the time is  "<< " } " << endl << "\t";
+        }
+        cout << endl;
+
+    }*/
 }
 
-void Speed_Bonus::Billman_ford_bonus(
+void Speed_Bonus::Dijkstra_edited(
     vector<vector<Read_file::Adj_nodes_bonus>>& adj_list,
-    int source_node_idx, int destination_node_idx,
-    vector<int>& path,
-    float& shortest_time_hours,
-    float& path_length_km,
-    float& total_walking_distance_km,
-    float& total_vehicle_distance_km,
-    float speed_interval_hours,
+    int source, int destination,
+    vector<int>& path, double& shortest_time,
+    double& path_length, double& total_walking_distance,
+    double& total_vehicle_distance,
+    double speed_interval_hours,
     int speed_count)
 {
     int N = adj_list.size();
-    if (N == 0 || source_node_idx < 0 || source_node_idx >= N || destination_node_idx < 0 || destination_node_idx >= N) {
-        shortest_time_hours = std::numeric_limits<float>::max();
-        path.clear();
-        path_length_km = 0.0f;
-        total_walking_distance_km = 0.0f;
-        total_vehicle_distance_km = 0.0f;
-        return;
-    }
+    vector<int> parent(N, -1); // O(N)
+    vector<set<int>> visited_from(N); // Track all nodes each node was visited from
 
-    vector<float> dist_hours(N, std::numeric_limits<float>::max());
-    vector<int> parent(N, -1);
+    vector<vector<Read_file::Adj_nodes_bonus>>temp = adj_list;
 
-    dist_hours[source_node_idx] = 0.0f;
+    // Priority queue for processing nodes in order of shortest time (min-heap)
+    priority_queue<pair<double, int>, vector<pair<double, int>>, greater<pair<double, int>>> pq;
+    vector<set<pair<double, vector<int>>>> time(N);
+    time[source].insert(std::make_pair(0.0, vector<int>{source}));
+    pq.push({ 0.0f, source }); // O(log N)
 
-    for (int iter = 0; iter < N - 1; ++iter) { // Renamed loop variable for clarity
-        bool changed_in_iteration = false;
-        for (int u = 0; u < N; ++u) {
-            if (dist_hours[u] == std::numeric_limits<float>::max()) {
+    // Dijkstra's algorithm loop O(V)
+    while (!pq.empty()) {
+        double current_time = pq.top().first;
+        int u = pq.top().second;
+        pq.pop();
+
+        if (adj_list[u].size() == 0) continue;
+
+        // If we came from a node and this node only has two neighbors, remove the back edge
+        if (!visited_from[u].empty() && adj_list[u].size() == 2) {
+            for (int from_node : visited_from[u]) {
+                adj_list[u].erase(remove_if(
+                    adj_list[u].begin(), adj_list[u].end(),
+                    [&](const Read_file::Adj_nodes_bonus& neighbor) {
+                        return neighbor.node == from_node;
+                    }),
+                    adj_list[u].end());
+
+                has_been_deleted.push_back({ u, from_node });
+            }
+        }
+
+        // O(E) loop over all edges from node u
+        for (int i = 0; i < adj_list[u].size(); ++i) {
+            int v = adj_list[u][i].node;
+
+            // If we've already visited this node from the same parent before, remove it to prevent loop
+            if (visited_from[v].count(u)) {
+                adj_list[u].erase(adj_list[u].begin() + i);
+                has_been_deleted.push_back({ u, v });
+                --i; // adjust index after erase
                 continue;
             }
 
-            for (const auto& edge : adj_list[u]) {
-                int v = edge.node; // Corrected: Use .node instead of .to
-                if (v < 0 || v >= N) continue;
+            for (const auto& entry : time[u]) {
+                double t = entry.first;
+                vector<int> current_path = entry.second;
 
-                float actual_travel_time_uv_hours;
-                if (edge.time.empty()) {
-                    actual_travel_time_uv_hours = std::numeric_limits<float>::max();
-                }
-                else if (edge.time.size() == 1 || speed_count <= 0 || speed_interval_hours <= 0.0f) {
-                    actual_travel_time_uv_hours = edge.time[0];
-                }
-                else {
-                    float time_to_u_hours = dist_hours[u];
-                    int current_interval_idx = 0;
-                    if (speed_interval_hours > 1e-9) {
-                        current_interval_idx = static_cast<int>(time_to_u_hours / speed_interval_hours);
-                    }
-                    int selected_time_idx = current_interval_idx % speed_count;
+                double edge_time;
+                if (v == destination || u == source)
+                    edge_time = adj_list[u][i].time[0];
+                else
+                    edge_time = adj_list[u][i].time[static_cast<int>(t / speed_interval_hours) % speed_count];
 
-                    if (selected_time_idx < 0 || static_cast<size_t>(selected_time_idx) >= edge.time.size()) {
-                        actual_travel_time_uv_hours = edge.time[0];
-                    }
-                    else {
-                        actual_travel_time_uv_hours = edge.time[selected_time_idx];
-                    }
-                }
+                double new_time = t + edge_time;
+                vector<int> new_path = current_path;
+                new_path.push_back(v);
 
-                if (dist_hours[u] != std::numeric_limits<float>::max() && actual_travel_time_uv_hours != std::numeric_limits<float>::max() && dist_hours[u] + actual_travel_time_uv_hours < dist_hours[v]) {
-                    dist_hours[v] = dist_hours[u] + actual_travel_time_uv_hours;
-                    parent[v] = u;
-                    changed_in_iteration = true;
-                }
+                time[v].insert(make_pair(new_time, new_path));
+                pq.push({ new_time, v });
+                parent[v] = u;
+                visited_from[v].insert(u);
             }
         }
-        if (!changed_in_iteration) {
-            break;
-        }
     }
 
-    path.clear();
-    shortest_time_hours = dist_hours[destination_node_idx];
-    path_length_km = 0.0f;
-    total_walking_distance_km = 0.0f;
-    total_vehicle_distance_km = 0.0f;
+    // Get the shortest time and path
 
-    if (shortest_time_hours == std::numeric_limits<float>::max()) {
-        return;
-    }
+    shortest_time = time[destination].begin()->first;
+    path = time[destination].begin()->second;
 
-    int curr = destination_node_idx;
-    while (curr != -1) {
-        path.push_back(curr);
-        if (parent[curr] == curr && curr != source_node_idx) {
-            path.clear();
-            shortest_time_hours = std::numeric_limits<float>::max();
-            return;
-        }
-        curr = parent[curr];
-    }
-    std::reverse(path.begin(), path.end());
+	// Calculate path length, total walking distance, and total vehicle distance
+    path_length = 0.0;
+    total_walking_distance = 0.0;
+    total_vehicle_distance = 0.0;
 
-    if (path.empty() || path[0] != source_node_idx) {
-        shortest_time_hours = std::numeric_limits<float>::max();
-        path.clear();
-        return;
-    }
+    for (size_t i = 1; i < path.size(); ++i) {
+        int u = path[i - 1];
+        int v = path[i];
 
-    for (size_t i = 0; i < path.size() - 1; ++i) {
-        int u_node = path[i];
-        int v_node = path[i + 1];
-        bool edge_found_in_adj = false;
+        for (const auto& edge : temp[u]) {
+            if (edge.node == v) {
+                path_length += edge.distance;
 
-        for (const auto& edge_data : adj_list[u_node]) {
-            if (edge_data.node == v_node) { // Corrected: Use .node instead of .to
-                path_length_km += edge_data.distance;
-
-                bool is_walking_edge = false;
-                // An edge is walking if it starts from the virtual source or ends at the virtual destination.
-                // source_node_idx and destination_node_idx are the virtual nodes.
-                if (u_node == source_node_idx || v_node == destination_node_idx) {
-                    is_walking_edge = true;
-                }
-
-                if (is_walking_edge) {
-                    total_walking_distance_km += edge_data.distance;
+                if ((i == 1 && u == source) || (i == path.size() - 1 && v == destination)) {
+                    total_walking_distance += edge.distance;
                 }
                 else {
-                    total_vehicle_distance_km += edge_data.distance;
+                    total_vehicle_distance += edge.distance;
                 }
-                edge_found_in_adj = true;
-                break;
             }
-        }
-        if (!edge_found_in_adj) {
-            path_length_km = 0.0f; total_walking_distance_km = 0.0f; total_vehicle_distance_km = 0.0f;
-            shortest_time_hours = std::numeric_limits<float>::max();
-            path.clear();
-            return;
         }
     }
 }
 
+void Speed_Bonus::orig_list(vector<pair<int, int>>& has_been_deleted)
+{
+    for (int i = 0; i < has_been_deleted.size(); ++i)
+    {
+
+    }
+}
 
 
 void Speed_Bonus::Original_Adj_list_bonus(vector<vector<Read_file::Adj_nodes_bonus>>& adj_list)
