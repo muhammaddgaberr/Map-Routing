@@ -18,14 +18,13 @@ public :
 	// assuming the source is node 0 and destination is node (N_nodes+1)
 
 	void fixing_Adj_List
-	(vector<vector<Read_file::Adj_nodes>>& adj_list, vector<pair<float, float>> &co_ordinates,
-		float source_x, float source_y, float destination_x, float destination_y, float R);
+	(vector<vector<Read_file::Adj_nodes>>& adj_list, vector<pair<double, double>> &co_ordinates,
+		double source_x, double source_y, double destination_x, double destination_y, double R, int co_ordinates_size);
 
 	void Original_Adj_list(vector<vector<Read_file::Adj_nodes>>& adj_list);
 
 	void dijkstra(vector<vector<Read_file::Adj_nodes>>& adj_list,
-		int source, int destination, vector<int>& path, float& shortest_time, float& path_length,
-		float& total_walking_distance, float& total_vehicle_distance);
-
+		int source, int destination, vector<int>& path, double& shortest_time, double& path_length,
+		double& total_walking_distance, double& total_vehicle_distance, int adj_list_size);
 };
 
