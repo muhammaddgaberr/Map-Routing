@@ -55,21 +55,35 @@ Each road contains:
 - Road speed
 
 Example:
+
 6
+
 0 0.25 0.33
+
 1 0.73 0.47
+
 2 1.00 0.54
+
 3 0.34 0.60
+
 4 0.81 0.20
+
 5 1.07 0.28
 
 Edges:
+
 0 1 0.50 20
+
 0 3 0.28 80
+
 3 4 0.62 80
+
 1 4 0.28 40
+
 1 2 0.28 40
+
 4 5 0.27 60
+
 2 5 0.27 60
 
 ---
@@ -85,7 +99,9 @@ Source_x Source_y Destination_x Destination_y R
 Where **R** is the maximum walking distance.
 
 Example:
+
 1
+
 0.16 0.21 1.09 0.44 300
 
 ---
@@ -103,11 +119,11 @@ The program generates an output file containing:
 
 Example output:
 
-Path nodes: 0 → 3 → 4 → 5 → 2
-Shortest time = 4.63 mins
-Path length = 1.72 km
-Total walking distance = 0.28 km
-Total road distance = 1.44 km
+- Path nodes: 0 → 3 → 4 → 5 → 2
+- Shortest time = 4.63 mins
+- Path length = 1.72 km
+- Total walking distance = 0.28 km
+- Total road distance = 1.44 km
 
 ---
 
