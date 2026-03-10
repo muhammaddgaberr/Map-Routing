@@ -218,4 +218,4 @@ The system supports multiple dataset sizes:
 
 A full explanation of the project is available in the presentation:
 
-[Project Presentation]docs/project-presentation.pptx
+[Project Presentation](docs/project-presentation.pptx)
